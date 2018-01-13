@@ -55,7 +55,6 @@ Thumbs.db
 .grunt
 .localrc
 .lock-wscript
-.npmrc
 /.sass-cache
 /connect.lock
 /libpeerconnection.log
