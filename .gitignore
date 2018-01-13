@@ -36,7 +36,6 @@ Thumbs.db
 /.idea
 .classpath
 .c9/
-.editorconfig
 .project
 .settings/
 *.launch
