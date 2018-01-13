@@ -48,7 +48,6 @@ Thumbs.db
 !.vscode/extensions.json
 
 # ENV/RC #
-.bowerrc
 .cache
 .env
 .git
