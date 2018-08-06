@@ -3,6 +3,7 @@
 > Contributions are always welcome, no matter how large or small.
 
 As a contributor, here are the guidelines we would like you to follow:
+
 - [Code of conduct](#code-of-conduct)
 - [How can I contribute?](#how-can-i-contribute)
 - [Using the issue tracker](#using-the-issue-tracker)
@@ -69,23 +70,24 @@ Here is a summary of the steps to follow:
 1. [Set up the workspace](#set-up-the-workspace)
 2. If you cloned a while ago, get the latest changes from upstream and update dependencies:
 ```bash
-$ git checkout master
-$ git pull upstream master
-$ rm -rf node_modules
-$ npm install
+git checkout master
+git pull upstream master
+rm -rf node_modules
+npm install
 ```
 3. Create a new topic branch (off the main project development branch) to contain your feature, change, or fix:
 ```bash
-$ git checkout -b <topic-branch-name>
+git checkout -b <topic-branch-name>
 ```
 4. Make your code changes, following the [Coding rules](#coding-rules)
 5. Push your topic branch up to your fork:
 ```bash
-$ git push origin <topic-branch-name>
+git push origin <topic-branch-name>
 ```
 6. [Open a Pull Request](https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request) with a clear title and description.
 
 **Tips**:
+
 - For ambitious tasks, open a Pull Request as soon as possible with the `[WIP]` prefix in the title, in order to get feedback and help from the community.
 - [Allow semantic-release maintainers to make changes to you Pull Request branch](https://help.github.com/articles/allowing-changes-to-a-pull-request-branch-created-from-a-fork) this way we can rebase it and make some minor changes if necessary. All changes we make will be done in new commit and we'll ask for your approval before merging them.
 
