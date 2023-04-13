@@ -1,0 +1,36 @@
+---
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: [main, master, develop, 'releases/**', 'feat/**', 'fix/**']
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/integration.yml
+      - .github/workflows/linter.yml
+      - .github/workflows/semantic-pr.yml
+      - .github/workflows/sonar.yml
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  statuses: write
+  pull-requests: write
+
+jobs:
+  semver:
+    if: ${{ github.base_ref != '' || github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/semantic-pr.yml
+
+  lint:
+    uses: ./.github/workflows/linter.yml
+
+  # sonar:
+  #   uses: ./.github/workflows/sonar.yml
+  #   secrets:
+  #     token: ${{ env.SONAR_TOKEN }}

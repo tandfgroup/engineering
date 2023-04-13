@@ -50,7 +50,7 @@ The **footer** can contain a [closing reference to an issue](https://help.github
 
 ### Revert
 
-If the commit reverts a previous commit, it should begin with `revert: `, followed by the header of the reverted commit. In the body it should say: `This reverts commit <hash>.`, where the hash is the SHA of the commit being reverted.
+If the commit reverts a previous commit, it should begin with `revert:`, followed by the header of the reverted commit. In the body it should say: `This reverts commit <hash>.`, where the hash is the SHA of the commit being reverted.
 
 ### Type
 
@@ -59,7 +59,7 @@ The type must be one of the following:
 | Type         | Description                                                                                                 |
 |--------------|-------------------------------------------------------------------------------------------------------------|
 | **build**    | Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)         |
-| **ci**       | Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs) |
+| **ci**       | Changes to the CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs) |
 | **docs**     | Documentation only changes                                                                                  |
 | **feat**     | A new feature                                                                                               |
 | **fix**      | A bug fix                                                                                                   |
@@ -190,7 +190,7 @@ Before pushing your code changes make sure there is no linting errors, i.e.; `np
 - All Python syntax must adhere to [Google's Python Style Guide](https://google.github.io/styleguide/pyguide.html).
 - Run [`pylint`](https://www.pylint.org/) over your code.
 
-### Ruby <a id="Ruby"></a>
+### Ruby <a id="ruby"></a>
 
 - All Ruby syntax must adhere to [The Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide).
 - Run [`rubocop`](https://github.com/bbatsov/rubocop) over your code.
