@@ -51,6 +51,10 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init
+        env:
+          GIT_TERMINAL_PROMPT: 0
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
 
       - name: Terraform Validate
         id: validate
