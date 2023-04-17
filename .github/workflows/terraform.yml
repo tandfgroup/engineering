@@ -1,5 +1,6 @@
 ---
 name: Terraform
+# https://github.com/hashicorp/setup-terraform#usage
 
 on:
   workflow_call:
@@ -12,6 +13,10 @@ on:
         description: Directory in which to run Terraform commands and operations
         type: string
         default: ./
+      state:
+        description: 'Select a state storage option: local, cloud, s3'
+        type: string
+        default: local
       format:
         description: Trigger workflow to run 'terraform fmt -check' command
         type: boolean
@@ -28,6 +33,8 @@ on:
         description: Trigger workflow to run 'terraform apply' command
         type: boolean
         default: false
+    secrets:
+      TF_API_TOKEN:
 
 permissions:
   contents: read
@@ -44,12 +51,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # https://github.com/hashicorp/setup-terraform#usage
       - name: Setup Terraform
+        if: ${{ inputs.state == 'local' || inputs.state == 's3' }}
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ inputs.version }}
-          # cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Setup Terraform Cloud
+        if: ${{ inputs.state == 'cloud' }}
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ inputs.version }}
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format
         id: fmt
