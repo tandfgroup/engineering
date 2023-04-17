@@ -77,10 +77,10 @@ jobs:
           # GIT_SSH_COMMAND: "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
           # SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GIT_SSH_COMMAND: |
-            echo "${{ secrets.ORG_PRIVATE_SSH_KEY }}" > id_rsa \
+            echo -e "${{ secrets.ORG_PRIVATE_SSH_KEY }}" > id_rsa \
             && ssh-keyscan github.com > known_hosts \
             && chmod 600 id_rsa known_hosts \
-            && ssh -i ./id_rsa -o UserKnownHostsFile=./known_hosts
+            && ssh -i ./id_rsa -o UserKnownHostsFile=./known_hosts -T git@github.com
 
       - name: Terraform Validate
         id: validate
