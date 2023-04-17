@@ -73,7 +73,7 @@ jobs:
         id: init
         run: terraform init
         env:
-          GIT_TERMINAL_PROMPT: 0
+          # GIT_TERMINAL_PROMPT: 0
           # GIT_SSH_COMMAND: "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
           # SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GIT_SSH_COMMAND: |
