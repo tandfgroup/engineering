@@ -34,6 +34,7 @@ on:
         type: boolean
         default: false
     secrets:
+      SSH_PRIVATE_KEY:
       TF_API_TOKEN:
 
 permissions:
@@ -50,9 +51,17 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
     env:
       GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
 
       - name: Setup Terraform
         if: ${{ inputs.state == 'local' || inputs.state == 's3' }}
