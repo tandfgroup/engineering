@@ -188,3 +188,6 @@ jobs:
         # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         if: ${{ inputs.apply == true }}
         run: terraform apply -auto-approve -input=false
+        env:
+          NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEWRELIC_API_KEY_ID }}
+          NEW_RELIC_API_KEY: ${{ secrets.NEWRELIC_API_KEY_VALUE}}
