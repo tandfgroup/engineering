@@ -62,8 +62,7 @@ jobs:
       - name: Configure git+ssh auth
         run: |
           ssh -vT git@github.com
-          ssh -T git@github.com
-          [[ -f ~/.ssh/config ]] && cat ~/.ssh/config
+          cat ~/.ssh/config
 
       - name: Setup Terraform
         if: ${{ inputs.state == 'local' || inputs.state == 's3' }}
