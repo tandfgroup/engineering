@@ -39,6 +39,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  repository-projects: read
 
 jobs:
   terraform:
@@ -49,13 +50,13 @@ jobs:
         shell: bash
         working-directory: ${{ inputs.working-directory }}
     env:
-      GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      GH_TOKEN: ${{ secrets.GH_PAT }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Configure git auth
-        run: git config --global url."https://oauth2:$GITHUB_TOKEN@github.com/tandfgroup/".insteadOf "ssh://git@github.com/tandfgroup/"
+        run: git config --global url."https://oauth2:$GH_TOKEN@github.com/tandfgroup/".insteadOf "ssh://git@github.com/tandfgroup/"
 
       - name: Setup Terraform
         if: ${{ inputs.state == 'local' || inputs.state == 's3' }}
