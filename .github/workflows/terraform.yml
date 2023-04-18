@@ -57,15 +57,6 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
 
-      - name: Configure git+ssh auth
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/id_rsa ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=~/.ssh/known_hosts github.com
-          [[ -f ~/.ssh/config ]] && cat ~/.ssh/config
-
       - name: Setup Terraform
         if: ${{ inputs.state == 'local' || inputs.state == 's3' }}
         uses: hashicorp/setup-terraform@v2
