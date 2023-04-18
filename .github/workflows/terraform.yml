@@ -35,6 +35,8 @@ on:
         default: false
     secrets:
       TF_API_TOKEN:
+      NEWRELIC_API_KEY_ID:
+      NEWRELIC_API_KEY_VALUE:
 
 permissions:
   contents: read
@@ -104,6 +106,9 @@ jobs:
         # if: github.event_name == 'pull_request'
         if: ${{ inputs.plan == true }}
         run: terraform plan -no-color -input=false
+        env:
+          NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEWRELIC_API_KEY_ID }}
+          NEW_RELIC_API_KEY: ${{ secrets.NEWRELIC_API_KEY_VALUE}}
         continue-on-error: true
 
       - name: Terraform Plan Output Summary
