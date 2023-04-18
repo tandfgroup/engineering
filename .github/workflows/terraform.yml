@@ -117,6 +117,7 @@ jobs:
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.plan.outputs.stdout }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "event_name: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
       - name: Update Pull Request
