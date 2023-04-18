@@ -34,7 +34,6 @@ on:
         type: boolean
         default: false
     secrets:
-      SSH_PRIVATE_KEY:
       TF_API_TOKEN:
 
 permissions:
@@ -51,17 +50,12 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
     env:
       GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Configure git auth
+        run: git config --global url."https://oauth2:$GITHUB_TOKEN@github.com/tandfgroup/".insteadOf "ssh://git@github.com/tandfgroup/"
 
       - name: Setup Terraform
         if: ${{ inputs.state == 'local' || inputs.state == 's3' }}
@@ -84,9 +78,6 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init
-        env:
-          GIT_SSH_COMMAND: |
-            ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=./known_hosts -o IdentitiesOnly=yes
 
       - name: Terraform Validate
         id: validate
