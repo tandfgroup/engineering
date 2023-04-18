@@ -84,6 +84,9 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init
+        env:
+          GIT_SSH_COMMAND: |
+            ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=./known_hosts -o IdentitiesOnly=yes
 
       - name: Terraform Validate
         id: validate
