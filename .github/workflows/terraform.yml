@@ -34,6 +34,8 @@ on:
         type: boolean
         default: false
     secrets:
+      SSH_PRIVATE_EMAIL:
+      SSH_PRIVATE_KEY:
       TF_API_TOKEN:
       NEWRELIC_API_KEY_ID:
       NEWRELIC_API_KEY_VALUE:
@@ -82,10 +84,7 @@ jobs:
         id: init
         run: terraform init
         env:
-          # GIT_TERMINAL_PROMPT: 0
-          # GIT_SSH_COMMAND: "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-          # SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          GIT_SSH_COMMAND: |
+          GIT_SSH_COMMAND:
             ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=./known_hosts -o IdentitiesOnly=yes
           # echo -e "${{ secrets.ORG_PRIVATE_SSH_KEY }}" > id_rsa \
           # && ssh-keyscan github.com > known_hosts \
