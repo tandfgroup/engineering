@@ -46,13 +46,20 @@ jobs:
   terraform:
     name: Terraform
     runs-on: ubuntu-latest
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.ORG_PRIVATE_SSH_KEY }}
     defaults:
       run:
         working-directory: ${{ inputs.working-directory }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "$ORG_PRIVATE_SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
       - name: Setup Terraform
         if: ${{ inputs.state == 'local' || inputs.state == 's3' }}
         uses: hashicorp/setup-terraform@v2
@@ -79,10 +86,11 @@ jobs:
           # GIT_SSH_COMMAND: "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
           # SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           GIT_SSH_COMMAND: |
-            echo -e "${{ secrets.ORG_PRIVATE_SSH_KEY }}" > id_rsa \
-            && ssh-keyscan github.com > known_hosts \
-            && chmod 600 id_rsa known_hosts \
-            && ssh -i ./id_rsa -o UserKnownHostsFile=./known_hosts -T git@github.com
+            ssh -i ~/.ssh/id_rsa -o UserKnownHostsFile=./known_hosts -o IdentitiesOnly=yes
+          # echo -e "${{ secrets.ORG_PRIVATE_SSH_KEY }}" > id_rsa \
+          # && ssh-keyscan github.com > known_hosts \
+          # && chmod 600 id_rsa known_hosts \
+          # && ssh -i ./id_rsa -o UserKnownHostsFile=./known_hosts -T git@github.com
 
       - name: Terraform Validate
         id: validate
