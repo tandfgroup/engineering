@@ -59,14 +59,9 @@ jobs:
         with:
           token: ${{ secrets.GH_PAT }}
 
-      - name: Configure git+ssh auth
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/private_key
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/private_key ~/.ssh/known_hosts
-          ssh -i ~/.ssh/private_key -o UserKnownHostsFile=~/.ssh/known_hosts git@github.com
-          [[ -f ~/.ssh/config ]] && cat ~/.ssh/config
+      - uses: webfactory/ssh-agent@v0.8.0
+        with:
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Setup Terraform
         if: ${{ inputs.state == 'local' || inputs.state == 's3' }}
