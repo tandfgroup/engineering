@@ -61,7 +61,6 @@ jobs:
 
       - name: Configure git+ssh auth
         run: |
-          ssh -vT git@github.com
           cat ~/.ssh/config
 
       - name: Setup Terraform
