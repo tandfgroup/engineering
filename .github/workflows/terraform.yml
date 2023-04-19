@@ -35,9 +35,13 @@ on:
         default: false
     secrets:
       ENV_VARS:
+        required: false
       GH_TOKEN:
+        required: true
       SSH_PRIVATE_KEY:
+        required: true
       TF_API_TOKEN:
+        required: false
 
 permissions:
   contents: read
