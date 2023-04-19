@@ -62,7 +62,7 @@ jobs:
             ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Set ENV variables from ENV_VARS content
-        if: secrets.ENV_VARS != ''
+        if: ${{ secrets.ENV_VARS }}
         run: echo "${{ secrets.ENV_VARS }}" >> "$GITHUB_ENV"
 
       - name: Setup Terraform
