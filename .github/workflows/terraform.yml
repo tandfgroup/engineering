@@ -67,10 +67,7 @@ jobs:
 
       - name: Set ENV variables from ENV_VARS content
         shell: bash
-        run: |
-          if [ "${{ secrets.ENV_VARS }}" != '' ]; then
-            echo "${{ secrets.ENV_VARS }}" >> "$GITHUB_ENV"
-          fi
+        run: echo "${{ secrets.ENV_VARS }}" >> "$GITHUB_ENV"
 
       - name: Setup Terraform
         if: inputs.state == 'local' || inputs.state == 's3'
