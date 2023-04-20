@@ -36,9 +36,9 @@ on:
     secrets:
       GH_TOKEN:
         required: true
-      NEWRELIC_API_KEY_ID:
+      NEWRELIC_ACCOUNT_ID:
         required: true
-      NEWRELIC_API_KEY_VALUE:
+      NEWRELIC_API_KEY:
         required: true
       SSH_PRIVATE_KEY:
         required: true
@@ -49,6 +49,11 @@ permissions:
   contents: read
   pull-requests: write
 
+env:
+  TF_VAR_newrelic_account_id: ${{ secrets.NEWRELIC_ACCOUNT_ID }}
+  TF_VAR_newrelic_api_key: ${{ secrets.NEWRELIC_API_KEY }}
+  TF_VAR_terraform_cloud_organization: tandfgroup
+  TF_VAR_terraform_cloud_workspace: newrelic
 jobs:
   terraform:
     name: Terraform
@@ -57,9 +62,6 @@ jobs:
       run:
         shell: bash
         working-directory: ${{ inputs.working-directory }}
-    env:
-      NEWRELIC_API_KEY_ID: ${{ secrets.NEWRELIC_API_KEY_ID }}
-      NEWRELIC_API_KEY_VALUE: ${{ secrets.NEWRELIC_API_KEY_VALUE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
