@@ -67,8 +67,9 @@ jobs:
 
       - name: Set ENV variables from ENV_VARS content
         id: setvars
-        shell: bash
-        run: echo "${{ fromJSON(secrets.ENV_VARS) }}" >> $GITHUB_ENV
+        uses: RaphaelNeumann/json-to-env-action@v1
+        with:
+          json_envs: ${{ secrets.ENV_VARS }}
 
       - name: Setup Terraform
         if: inputs.state == 'local' || inputs.state == 's3'
