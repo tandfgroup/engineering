@@ -1,10 +1,14 @@
 ---
-name: Terraform
+name: Terraform for AWS
 # https://github.com/hashicorp/setup-terraform#usage
 
 on:
   workflow_call:
     inputs:
+      AWS_DEFAULT_REGION:
+        description: AWS Region
+        type: string
+        default: us-east-1
       version:
         description: Version of Terraform to use
         type: string
@@ -34,6 +38,12 @@ on:
         type: boolean
         default: false
     secrets:
+      AWS_ACCOUNT_ID:
+        required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
       GH_TOKEN:
         required: true
       SSH_PRIVATE_KEY:
@@ -53,6 +63,11 @@ jobs:
       run:
         shell: bash
         working-directory: ${{ inputs.working-directory }}
+    env:
+      AWS_DEFAULT_REGION: ${{ inputs.AWS_DEFAULT_REGION }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
