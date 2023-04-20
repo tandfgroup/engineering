@@ -66,8 +66,9 @@ jobs:
             ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Set ENV variables from ENV_VARS content
+        id: setvars
         shell: bash
-        run: echo "${{ secrets.ENV_VARS }}" >> "$GITHUB_ENV"
+        run: echo "${{ fromJSON(secrets.ENV_VARS) }}" >> $GITHUB_ENV
 
       - name: Setup Terraform
         if: inputs.state == 'local' || inputs.state == 's3'
@@ -165,7 +166,7 @@ jobs:
 
             </details>
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.working-directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
             // 3. If we have a comment, update it, otherwise create a new one
             if (botComment) {
