@@ -50,8 +50,8 @@ permissions:
   pull-requests: write
 
 env:
-  TF_VAR_newrelic_account_id: ${{ secrets.NEWRELIC_ACCOUNT_ID }}
-  TF_VAR_newrelic_api_key: ${{ secrets.NEWRELIC_API_KEY }}
+  TF_VAR_NEWRELIC_ACCOUNT_ID: ${{ secrets.NEWRELIC_ACCOUNT_ID }}
+  TF_VAR_NEWRELIC_API_KEY: ${{ secrets.NEWRELIC_API_KEY }}
   TF_VAR_terraform_cloud_organization: tandfgroup
   TF_VAR_terraform_cloud_workspace: newrelic
 jobs:
