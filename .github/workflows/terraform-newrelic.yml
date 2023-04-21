@@ -112,20 +112,14 @@ jobs:
         continue-on-error: true
 
       - name: Configure New Relic credentials
-        env:
-          NEWRELIC_ACCOUNT_ID: ${{ secrets.NEWRELIC_ACCOUNT_ID }}
-          NEWRELIC_API_KEY: ${{ secrets.NEWRELIC_API_KEY }}
         run: |
-          echo "export NEW_RELIC_ACCOUNT_ID=$NEWRELIC_ACCOUNT_ID" >> $GITHUB_ENV
-          echo "export NEW_RELIC_API_KEY=$NEWRELIC_API_KEY" >> $GITHUB_ENV
+          echo "export TF_VAR_newrelic_account_id=$TF_VAR_newrelic_account_id" >> $GITHUB_ENV
+          echo "export TF_VAR_newrelic_api_key=$TF_VAR_newrelic_api_key" >> $GITHUB_ENV
 
       - name: Terraform Plan
         id: plan
         # if: github.event_name == 'pull_request'
         if: inputs.plan == true
-        env:
-          NEW_RELIC_ACCOUNT_ID: ${{ env.NEW_RELIC_ACCOUNT_ID }}
-          NEW_RELIC_API_KEY: ${{ env.NEW_RELIC_API_KEY }}
         run: terraform plan -no-color -input=false
         continue-on-error: true
 
