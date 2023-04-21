@@ -116,10 +116,6 @@ jobs:
         # if: github.event_name == 'pull_request'
         if: inputs.plan == true
         run: |
-          terraform plan \
-           -var "NEWRELIC_ACCOUNT_ID=${{ secrets.NEWRELIC_ACCOUNT_ID }}" \
-           -var "NEWRELIC_API_KEY=${{ secrets.NEWRELIC_API_KEY }}"
-
         continue-on-error: true
 
       - name: Terraform Plan Output Summary
