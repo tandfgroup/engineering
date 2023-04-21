@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [1.0.2](https://github.com/tandfgroup/engineering/compare/v1.0.1...v1.0.2) (2023-04-21)
+
+
+### Bug Fixes
+
+* change terraform cloud variables ([c9bbc1e](https://github.com/tandfgroup/engineering/commit/c9bbc1e26f1b731edd340ada83d7998bbbf7c20c))
+
 ## [1.0.1](https://github.com/tandfgroup/engineering/compare/v1.0.0...v1.0.1) (2023-04-17)
 
 
