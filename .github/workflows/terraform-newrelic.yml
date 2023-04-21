@@ -44,6 +44,10 @@ on:
         required: true
       TF_API_TOKEN:
         required: false
+      TF_ORG:
+        required: false
+      TF_WORKSPACE:
+        required: false
 
 permissions:
   contents: read
@@ -52,8 +56,9 @@ permissions:
 env:
   TF_VAR_newrelic_account_id: ${{ secrets.NEWRELIC_ACCOUNT_ID }}
   TF_VAR_newrelic_api_key: ${{ secrets.NEWRELIC_API_KEY }}
-  TF_VAR_terraform_cloud_organization: tandfgroup
-  TF_VAR_terraform_cloud_workspace: newrelic
+  TF_VAR_terraform_organization: ${{ secrets.TF_ORG }}
+  TF_VAR_terraform_workspace: ${{ secrets.TF_WORKSPACE }}
+
 jobs:
   terraform:
     name: Terraform
