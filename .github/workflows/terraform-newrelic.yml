@@ -127,6 +127,9 @@ jobs:
         if: inputs.plan == true
         run: terraform plan -no-color -input=false
         continue-on-error: true
+        env:
+          TF_VAR_newrelic_account_id: ${{ env.TF_VAR_newrelic_account_id }}
+          TF_VAR_newrelic_api_key: ${{ env.TF_VAR_newrelic_api_key }}
 
       - name: Terraform Plan Output Summary
         id: plan_summary
@@ -135,6 +138,7 @@ jobs:
           echo "### Terraform Plan 📖\`${{ steps.plan.outcome }}\`" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.plan.outputs.stdout }}" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.plan.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
