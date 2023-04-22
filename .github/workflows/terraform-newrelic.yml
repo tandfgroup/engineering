@@ -77,6 +77,11 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Export env vars
+        run: |
+          export TF_VAR_newrelic_account_id
+          export TF_VAR_newrelic_api_key
+
       - name: Setup Terraform
         if: inputs.state == 'local' || inputs.state == 's3'
         uses: hashicorp/setup-terraform@v2
@@ -89,9 +94,6 @@ jobs:
         with:
           terraform_version: ${{ inputs.version }}
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-        env:
-          TF_VAR_newrelic_account_id: ${{ env.TF_VAR_newrelic_account_id }}
-          TF_VAR_newrelic_api_key: ${{ env.TF_VAR_newrelic_api_key }}
 
       - name: Terraform Format
         id: fmt
