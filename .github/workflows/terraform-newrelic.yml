@@ -36,9 +36,11 @@ on:
     secrets:
       GH_TOKEN:
         required: true
-      NEWRELIC_ACCOUNT_ID:
+      NEW_RELIC_ACCOUNT_ID:
         required: true
-      NEWRELIC_API_KEY:
+      NEW_RELIC_API_KEY:
+        required: true
+      NEW_RELIC_REGION:
         required: true
       SSH_PRIVATE_KEY:
         required: true
@@ -54,8 +56,9 @@ permissions:
   pull-requests: write
 
 env:
-  TF_VAR_newrelic_account_id: ${{ secrets.NEWRELIC_ACCOUNT_ID }}
-  TF_VAR_newrelic_api_key: ${{ secrets.NEWRELIC_API_KEY }}
+  NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+  NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
+  NEW_RELIC_REGION: ${{ secrets.NEW_RELIC_REGION }}
   TF_VAR_terraform_organization: ${{ secrets.TF_ORG }}
   TF_VAR_terraform_workspace: ${{ secrets.TF_WORKSPACE }}
 
@@ -76,11 +79,6 @@ jobs:
       - uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Export env vars
-        run: |
-          export TF_VAR_newrelic_account_id="$TF_VAR_newrelic_account_id" >> "$GITHUB_ENV"
-          export TF_VAR_newrelic_api_key="$TF_VAR_newrelic_api_key" >> "$GITHUB_ENV"
 
       - name: Setup Terraform
         if: inputs.state == 'local' || inputs.state == 's3'
@@ -127,9 +125,6 @@ jobs:
         if: inputs.plan == true
         run: terraform plan -no-color -input=false
         continue-on-error: true
-        env:
-          TF_VAR_newrelic_account_id: ${{ env.TF_VAR_newrelic_account_id }}
-          TF_VAR_newrelic_api_key: ${{ env.TF_VAR_newrelic_api_key }}
 
       - name: Terraform Plan Output Summary
         id: plan_summary
@@ -138,7 +133,6 @@ jobs:
           echo "### Terraform Plan 📖\`${{ steps.plan.outcome }}\`" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.plan.outputs.stdout }}" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.plan.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
 
@@ -203,7 +197,12 @@ jobs:
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
-        run: exit 1
+        run: |
+          echo "### Terraform Plan Errors" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.plan.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          exit 1
 
       - name: Terraform Apply
         # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
