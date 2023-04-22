@@ -79,8 +79,8 @@ jobs:
 
       - name: Export env vars
         run: |
-          export TF_VAR_newrelic_account_id="$TF_VAR_newrelic_account_id"
-          export TF_VAR_newrelic_api_key="$TF_VAR_newrelic_api_key"
+          export TF_VAR_newrelic_account_id="$TF_VAR_newrelic_account_id" >> "$GITHUB_ENV"
+          export TF_VAR_newrelic_api_key="$TF_VAR_newrelic_api_key" >> "$GITHUB_ENV"
 
       - name: Setup Terraform
         if: inputs.state == 'local' || inputs.state == 's3'
