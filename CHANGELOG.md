@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [1.0.4](https://github.com/tandfgroup/engineering/compare/v1.0.3...v1.0.4) (2023-04-28)
+
+
+### Bug Fixes
+
+* remove terraform cloud env vars from terraform workflows ([16a798a](https://github.com/tandfgroup/engineering/commit/16a798a632c3fdc6344b5823a7aacb298d248dcd))
+
 ## [1.0.3](https://github.com/tandfgroup/engineering/compare/v1.0.2...v1.0.3) (2023-04-21)
 
 
