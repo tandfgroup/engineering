@@ -46,10 +46,6 @@ on:
         required: true
       TF_API_TOKEN:
         required: false
-      TF_ORG:
-        required: false
-      TF_WORKSPACE:
-        required: false
 
 permissions:
   contents: read
@@ -59,8 +55,6 @@ env:
   NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
   NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
   NEW_RELIC_REGION: ${{ secrets.NEW_RELIC_REGION }}
-  TF_VAR_terraform_organization: ${{ secrets.TF_ORG }}
-  TF_VAR_terraform_workspace: ${{ secrets.TF_WORKSPACE }}
 
 jobs:
   terraform:
