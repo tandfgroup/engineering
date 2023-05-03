@@ -87,31 +87,63 @@ jobs:
           terraform_version: ${{ inputs.version }}
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
+      - name: Start Terraform Job Summary
+        run: echo "## ✏️ Terraform — \`${{ inputs.working-directory }}\`" >> $GITHUB_STEP_SUMMARY
+
       - name: Terraform Format
         id: fmt
         if: inputs.format == true
         run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Format Output Summary
+        run: echo "### ✏️ Terraform Format and Style — \`${{ steps.fmt.outcome }}\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Terraform Format Failure Summary
+        if: steps.fmt.outcome == 'failure'
+        run: |
+          echo "#### ⚠️ Format Errors" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.fmt.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
       - name: Terraform Init
         id: init
         run: terraform init
+        continue-on-error: true
+
+      - name: Terraform Initialization Output Summary
+        run: echo "### ⚙️ Terraform Initialization  — \`${{ steps.init.outcome }}\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Terraform Initialization Failure Summary
+        if: steps.init.outcome == 'failure'
+        run: |
+          echo "#### ⚠️ Initialization Errors" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.init.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
       - name: Terraform Validate
         id: validate
         if: inputs.validate == true
         run: terraform validate -no-color
+        continue-on-error: true
 
       - name: Terraform Validation Output Summary
-        id: validation_summary
         if: inputs.validate == true
         run: |
-          echo "### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\` - ${{ inputs.working-directory }}" >> $GITHUB_STEP_SUMMARY
-          echo "### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\` - ${{ inputs.working-directory }}" >> $GITHUB_STEP_SUMMARY
-          echo "### Terraform Validation 🤖\`${{ steps.validate.outcome }}\` - ${{ inputs.working-directory }}" >> $GITHUB_STEP_SUMMARY
+          echo "### 🤖 Terraform Validation — \`${{ steps.validate.outcome }}\`" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.validate.outputs.stdout }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        continue-on-error: true
+
+      - name: Terraform Validation Failure Summary
+        if: steps.validate.outcome == 'failure'
+        run: |
+          echo "#### ⚠️ Validation Errors" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.validate.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
       - name: Terraform Plan
         id: plan
@@ -121,14 +153,20 @@ jobs:
         continue-on-error: true
 
       - name: Terraform Plan Output Summary
-        id: plan_summary
         if: inputs.plan == true
         run: |
-          echo "### Terraform Plan 📖\`${{ steps.plan.outcome }}\` - ${{ inputs.working-directory }}" >> $GITHUB_STEP_SUMMARY
+          echo "### 📖 Terraform Plan — \`${{ steps.plan.outcome }}\`" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.plan.outputs.stdout }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        continue-on-error: true
+
+      - name: Terraform Plan Failure Summary
+        if: steps.plan.outcome == 'failure'
+        run: |
+          echo "#### ⚠️ Plan Errors" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.plan.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
       - name: Update Pull Request
         uses: actions/github-script@v6
@@ -148,31 +186,28 @@ jobs:
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style') && comment.body.includes('${{ inputs.working-directory }}')
             })
 
-            let terraformAlerts = `#### :warning: Terraform Errors :warning: - ${{ inputs.working-directory }}
-              `;
-
-            terraformAlerts += ('${{ steps.fmt.outcome }}' == 'failure') ? `##### Terraform Format Errors
+            let terraformFmtAlerts = ('${{ steps.fmt.outcome }}' == 'failure') ? `##### ⚠️ ERRORS ‼️
 
               \`\`\`\n
               ${{ steps.fmt.outputs.stderr }}
               \`\`\`
               ` : '';
 
-            terraformAlerts += ('${{ steps.init.outcome }}' == 'failure') ? `##### Terraform Init Errors
+            let terraformInitAlerts = ('${{ steps.init.outcome }}' == 'failure') ? `##### ⚠️ ERRORS ‼️
 
               \`\`\`\n
               ${{ steps.init.outputs.stderr }}
               \`\`\`
               ` : '';
 
-            terraformAlerts += ('${{ steps.validate.outcome }}' == 'failure') ? `##### Terraform Validate Errors
+            let terraformValidateAlerts = ('${{ steps.validate.outcome }}' == 'failure') ? `##### ⚠️ ERRORS ‼️
 
               \`\`\`\n
               ${{ steps.validate.outputs.stderr }}
               \`\`\`
               ` : '';
 
-            terraformAlerts += ('${{ steps.plan.outcome }}' == 'failure') ? `##### Terraform Plan Errors
+            let terraformPlanAlerts = ('${{ steps.plan.outcome }}' == 'failure') ? `##### ⚠️ ERRORS ‼️
 
               \`\`\`\n
               ${{ steps.plan.outputs.stderr }}
@@ -180,9 +215,13 @@ jobs:
               ` : '';
 
             // 2. Prepare format of the comment
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\` - ${{ inputs.working-directory }}
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\` - ${{ inputs.working-directory }}
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\` - ${{ inputs.working-directory }}
+            const output = `### Terraform — \`${{ inputs.working-directory }}\`
+            #### ✏️ Terraform Format and Style: \`${{ steps.fmt.outcome }}\`
+            ${terraformFmtAlerts}
+            #### ⚙️ Terraform Initialization: \`${{ steps.init.outcome }}\`
+            ${terraformInitAlerts}
+            #### 🤖 Terraform Validation: \`${{ steps.validate.outcome }}\`
+            ${terraformValidateAlerts}
             <details><summary>Validation Output</summary>
 
             \`\`\`\n
@@ -191,8 +230,8 @@ jobs:
 
             </details>
 
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\` - ${{ inputs.working-directory }}
-
+            #### 📖 Terraform Plan: \`${{ steps.plan.outcome }}\`
+            ${terraformPlanAlerts}
             <details><summary>Show Plan</summary>
 
             \`\`\`\n
@@ -200,8 +239,6 @@ jobs:
             \`\`\`
 
             </details>
-
-            ${terraformAlerts}
 
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.working-directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
@@ -223,12 +260,9 @@ jobs:
             }
 
       - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
+        if: steps.plan.outcome == 'failure' || steps.validate.outcome == 'failure' || steps.init.outcome == 'failure' || steps.fmt.outcome == 'failure'
         run: |
-          echo "### Terraform Plan Errors - ${{ inputs.working-directory }}" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.plan.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "> Job failed. See errors for details." >> $GITHUB_STEP_SUMMARY
           exit 1
 
       - name: Terraform Apply
