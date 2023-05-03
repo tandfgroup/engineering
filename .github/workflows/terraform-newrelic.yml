@@ -148,7 +148,7 @@ jobs:
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style') && comment.body.includes('${{ inputs.working-directory }}')
             })
 
-            const terraformAlerts = `#### :warning: Terraform Errors :warning: - ${{ inputs.working-directory }}
+            let terraformAlerts = `#### :warning: Terraform Errors :warning: - ${{ inputs.working-directory }}
               `;
 
             terraformAlerts += ('${{ steps.fmt.outcome }}' == 'failure') ? `##### Terraform Format Errors
