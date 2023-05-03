@@ -148,6 +148,37 @@ jobs:
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style') && comment.body.includes('${{ inputs.working-directory }}')
             })
 
+            const terraformAlerts = `#### :warning: Terraform Errors :warning: - ${{ inputs.working-directory }}
+              `;
+
+            terraformAlerts += ('${{ steps.fmt.outcome }}' == 'failure') ? `##### Terraform Format Errors
+
+              \`\`\`\n
+              ${{ steps.fmt.outputs.stderr }}
+              \`\`\`
+              ` : '';
+
+            terraformAlerts += ('${{ steps.init.outcome }}' == 'failure') ? `##### Terraform Init Errors
+
+              \`\`\`\n
+              ${{ steps.init.outputs.stderr }}
+              \`\`\`
+              ` : '';
+
+            terraformAlerts += ('${{ steps.validate.outcome }}' == 'failure') ? `##### Terraform Validate Errors
+
+              \`\`\`\n
+              ${{ steps.validate.outputs.stderr }}
+              \`\`\`
+              ` : '';
+
+            terraformAlerts += ('${{ steps.plan.outcome }}' == 'failure') ? `##### Terraform Plan Errors
+
+              \`\`\`\n
+              ${{ steps.plan.outputs.stderr }}
+              \`\`\`
+              ` : '';
+
             // 2. Prepare format of the comment
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\` - ${{ inputs.working-directory }}
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\` - ${{ inputs.working-directory }}
@@ -162,13 +193,15 @@ jobs:
 
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\` - ${{ inputs.working-directory }}
 
-            <details><summary>Show Plan Errors</summary>
+            <details><summary>Show Plan</summary>
 
             \`\`\`\n
-            ${{ steps.plan.outputs.stderr }}
+            ${process.env.PLAN}
             \`\`\`
 
             </details>
+
+            ${terraformAlerts}
 
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.working-directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
