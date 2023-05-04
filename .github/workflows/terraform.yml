@@ -120,6 +120,7 @@ jobs:
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.fmt.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
 
       - name: Terraform Init
         id: init
@@ -136,6 +137,7 @@ jobs:
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.init.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
 
       - name: Terraform Validate
         id: validate
@@ -154,6 +156,7 @@ jobs:
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "</details>" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
 
       - name: Terraform Validation Failure Summary
         if: steps.validate.outcome == 'failure'
@@ -162,6 +165,7 @@ jobs:
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.validate.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
 
       - name: Terraform Plan
         id: plan
@@ -181,6 +185,7 @@ jobs:
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "</details>" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
 
       - name: Terraform Plan Failure Summary
         if: steps.plan.outcome == 'failure'
@@ -189,6 +194,7 @@ jobs:
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.plan.outputs.stderr }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
 
       - name: Update Pull Request
         uses: actions/github-script@v6
@@ -280,6 +286,7 @@ jobs:
                 body: output
               })
             }
+        continue-on-error: true
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure' || steps.validate.outcome == 'failure' || steps.init.outcome == 'failure' || steps.fmt.outcome == 'failure'
