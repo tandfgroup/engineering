@@ -83,4 +83,5 @@ yarn-error.log
 bower_components
 build/Release
 lib-cov
+megalinter-reports/
 node_modules
